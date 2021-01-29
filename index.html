@@ -136,22 +136,22 @@
                     <tr>
                       <th scope="row">1</th>
                       <td>Travel From</td>
-                      <td id="confirm-travel-from"></td>
+                      <td id="confirm-travel-from"><span class="text-danger">Set Your Starting Point!</span></td>
                     </tr>
                     <tr>
                       <th scope="row">2</th>
                       <td>Travel To</td>
-                      <td id="confirm-travel-to"></td>
+                      <td id="confirm-travel-to"><span class="text-danger">Set Your Destination!</span></td>
                     </tr>
                     <tr>
                       <th scope="row">3</th>
                       <td>Departure Date</td>
-                      <td id="confirm-departure-date"></td>
+                      <td id="confirm-departure-date"><span class="text-danger">Set Your Departure Date!</span></td>
                     </tr>
                     <tr>
                       <th scope="row">4</th>
                       <td>Return Date</td>
-                      <td id="confirm-return-date"></td>
+                      <td id="confirm-return-date"><span class="text-danger">Set Your Return Date!</span></td>
                     </tr>
                     <tr>
                       <th scope="row">5</th>
@@ -202,6 +202,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+      // Increasing and decreasing ticket and calculating total cost
       function ticketCounting(ticketType, isIncrease) {
         const ticketCountInput = document.getElementById(ticketType + '-count');
         if (isIncrease) {
@@ -211,27 +212,19 @@
             ticketCountInput.value--;
           }
         }
-        ticketPrice(ticketType);
         calculateTotalCost();
       }
 
-      function ticketPrice(ticketType) {
-        let totalTicket = getTotalTicket(ticketType);
-        let totalPrice = 0;
-        if (ticketType == 'firstClass') {
-          totalPrice = totalTicket * 150;
-        }
-        if (ticketType == 'economy') {
-          totalPrice = totalTicket * 100;
-        }
-      }
 
+      // Counting total number of ticket
       function getTotalTicket(ticketType) {
         const ticketCount = document.getElementById(ticketType + '-count');
         let ticketCountValue = parseInt(ticketCount.value);
         return ticketCountValue;
       }
 
+
+      // Calculating total cost
       function calculateTotalCost() {
         const firstClassCost = getTotalTicket('firstClass') * 150;
         const economyCost = getTotalTicket('economy') * 100;
@@ -242,18 +235,27 @@
         document.getElementById('tax').innerText = tax;
         document.getElementById('totalCost').innerText = totalCost;
         bookingConfirmation(firstClassCost, economyCost, subtotal, tax, totalCost);
-
       }
 
+
+      // Booking Confirmation
       function bookingConfirmation(firstClassCost, economyCost, subtotal, tax, totalCost) {
         const travelFrom = document.getElementById('travel-from').value;
         const travelTo = document.getElementById('travel-to').value;
         const departureDate = document.getElementById('departure-date').value;
         const returnDate = document.getElementById('return-date').value;
-        document.getElementById('confirm-travel-from').innerText = travelFrom;
-        document.getElementById('confirm-travel-to').innerText = travelTo;
-        document.getElementById('confirm-departure-date').innerText = departureDate;
-        document.getElementById('confirm-return-date').innerText = returnDate;
+        if (travelFrom != "") {
+          document.getElementById('confirm-travel-from').innerText = travelFrom;
+        }
+        if (travelTo != "") {
+          document.getElementById('confirm-travel-to').innerText = travelTo;
+        }
+        if (departureDate != "") {
+          document.getElementById('confirm-departure-date').innerText = departureDate;
+        }
+        if (returnDate != "") {
+          document.getElementById('confirm-return-date').innerText = returnDate;
+        }
         document.getElementById('confirm-firstClass-ticket').innerText = firstClassCost;
         document.getElementById('confirm-economy-ticket').innerText = economyCost;
         document.getElementById('confirm-subtotal').innerText = subtotal;
