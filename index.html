@@ -41,23 +41,23 @@
       <div class="booking-form">
         <h3>Book Ocean Time</h3>
         <div class="input-group">
-          <label for="">Flying From</label>
-          <input class="inp-style" type="text" name="" placeholder="Dhake, Bangladesh">
+          <label for="">Travel From</label>
+          <input id="travel-from" class="inp-style" type="text" name="" placeholder="Dhake, Bangladesh">
         </div>
 
         <div class="input-group">
-          <label for="">Flying To</label>
-          <input class="inp-style" type="text" name="" placeholder="New York, United States">
+          <label for="">Travel To</label>
+          <input id="travel-to" class="inp-style" type="text" name="" placeholder="New York, United States">
         </div>
 
         <div class="inputs">
           <div class="input-group">
             <label for="">Departure</label>
-            <input class="inp-style" type="date" name="">
+            <input id="departure-date" class="inp-style" type="date" name="">
           </div>
           <div class="input-group">
             <label for="">Return</label>
-            <input class="inp-style" type="date" name="">
+            <input id="return-date" class="inp-style" type="date" name="">
           </div>
         </div>
 
@@ -111,7 +111,7 @@
           </div>
         </div>
         <!-- Button trigger modal -->
-        <button type="button" class="btn-style" data-toggle="modal" data-target="#booking-confirmation">Book Now</button>
+        <button onclick="calculateTotalCost();" type="button" class="btn-style" data-toggle="modal" data-target="#booking-confirmation">Book Now</button>
 
         <!-- Modal -->
         <div class="modal fade" id="booking-confirmation">
@@ -124,7 +124,66 @@
                 </button>
               </div>
               <div class="modal-body">
-                ...
+                <table class="table table-sm">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Title</th>
+                      <th scope="col">Info</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Travel From</td>
+                      <td id="confirm-travel-from"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Travel To</td>
+                      <td id="confirm-travel-to"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td>Departure Date</td>
+                      <td id="confirm-departure-date"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">4</th>
+                      <td>Return Date</td>
+                      <td id="confirm-return-date"></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">5</th>
+                      <td>First Class Ticket</td>
+                      <td align="right">$<span id="confirm-firstClass-ticket">0</span></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">6</th>
+                      <td>Economy Ticket</td>
+                      <td align="right">$<span id="confirm-economy-ticket">0</span></td>
+                    </tr>
+                    <tr>
+                    <tr>
+                      <td colspan="2">
+                        <h6>Subtotal:</h6>
+                        <h6>VAT(10%):</h6>
+                      </td>
+                      <td align="right">
+                        <h6>$<span id="confirm-subtotal">0</span></h6>
+                        <h6>$<span id="confirm-tax">0</span></h6>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="2">
+                        <h5>Total:</h5>
+                      </td>
+                      <td align="right">
+                        <h5>$<span id="confirm-totalCost">0</span></h5>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -144,14 +203,16 @@
 
     <script>
       function ticketCounting(ticketType, isIncrease) {
+        const ticketCountInput = document.getElementById(ticketType + '-count');
         if (isIncrease) {
-          document.getElementById(ticketType + '-count').value++;
+          ticketCountInput.value++;
         } else {
-          if (ticketCount.value > 0) {
-            document.getElementById(ticketType + '-count').value--;
+          if (ticketCountInput.value > 0) {
+            ticketCountInput.value--;
           }
         }
         ticketPrice(ticketType);
+        calculateTotalCost();
       }
 
       function ticketPrice(ticketType) {
@@ -163,13 +224,41 @@
         if (ticketType == 'economy') {
           totalPrice = totalTicket * 100;
         }
-        console.log(ticketType, totalPrice);
       }
 
       function getTotalTicket(ticketType) {
         const ticketCount = document.getElementById(ticketType + '-count');
         let ticketCountValue = parseInt(ticketCount.value);
         return ticketCountValue;
+      }
+
+      function calculateTotalCost() {
+        const firstClassCost = getTotalTicket('firstClass') * 150;
+        const economyCost = getTotalTicket('economy') * 100;
+        const subtotal = firstClassCost + economyCost;
+        const tax = (subtotal * 10) / 100;
+        const totalCost = subtotal + tax;
+        document.getElementById('subtotal').innerText = subtotal;
+        document.getElementById('tax').innerText = tax;
+        document.getElementById('totalCost').innerText = totalCost;
+        bookingConfirmation(firstClassCost, economyCost, subtotal, tax, totalCost);
+
+      }
+
+      function bookingConfirmation(firstClassCost, economyCost, subtotal, tax, totalCost) {
+        const travelFrom = document.getElementById('travel-from').value;
+        const travelTo = document.getElementById('travel-to').value;
+        const departureDate = document.getElementById('departure-date').value;
+        const returnDate = document.getElementById('return-date').value;
+        document.getElementById('confirm-travel-from').innerText = travelFrom;
+        document.getElementById('confirm-travel-to').innerText = travelTo;
+        document.getElementById('confirm-departure-date').innerText = departureDate;
+        document.getElementById('confirm-return-date').innerText = returnDate;
+        document.getElementById('confirm-firstClass-ticket').innerText = firstClassCost;
+        document.getElementById('confirm-economy-ticket').innerText = economyCost;
+        document.getElementById('confirm-subtotal').innerText = subtotal;
+        document.getElementById('confirm-tax').innerText = tax;
+        document.getElementById('confirm-totalCost').innerText = totalCost;
       }
 
     </script>
